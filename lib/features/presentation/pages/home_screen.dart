@@ -19,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
     fullMessageTextToDisplay = message;
     displayText = "";
     int index = 0;
-    Timer.periodic(Duration(milliseconds: 100), (timer) {
+    Timer.periodic(const Duration(milliseconds: 100), (timer) {
       if (index < fullMessageTextToDisplay.length) {
         setState(() {
           displayText += fullMessageTextToDisplay[index];
@@ -97,13 +97,15 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Center(
-            child: CustomLogo(),
-          )
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Center(
+              child: CustomLogo(),
+            )
+          ],
+        ),
       ),
     );
   }
