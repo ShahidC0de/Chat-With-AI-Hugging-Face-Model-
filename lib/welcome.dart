@@ -1,5 +1,5 @@
 import 'package:chatgpt/core/constants/app_colors.dart';
-import 'package:chatgpt/features/presentation/pages/home_screen.dart';
+import 'package:chatgpt/features/chatting/presentation/pages/home_screen.dart';
 import 'package:flutter/material.dart';
 
 class Welcome extends StatelessWidget {
