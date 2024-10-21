@@ -21,8 +21,11 @@ dependencies:
   http: ^1.2.2
   fpdart: ^1.1.0
   flutter_bloc: ^8.1.6
+<<<<<<< HEAD
   get_it: ^8.0.0
   flutter_dotenv: ^5.2.1
+=======
+>>>>>>> 2bf6f9dd3ce373acdbd623f90d35696303b50ac4
 
 dev_dependencies:
   flutter_test:
