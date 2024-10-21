@@ -8,7 +8,7 @@ import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 
 final serviceLocator = GetIt.instance;
-final apiKey = dotenv.env['YOUR_OPENAI_API_KEY '] ?? "";
+final apiKey = dotenv.env['YOUR_OPENAI_API_KEY'] ?? "";
 
 void initDependencies() {
   serviceLocator.registerLazySingleton<http.Client>(() => http.Client());
