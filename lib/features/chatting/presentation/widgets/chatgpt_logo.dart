@@ -1,10 +1,11 @@
+import 'package:chatgpt/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class ChatGPTLogo extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final Paint paint = Paint()
-      ..color = Colors.black
+      ..color = AppStyles.cWhite
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3.0;
 
@@ -37,10 +38,12 @@ class ChatGPTLogo extends CustomPainter {
 }
 
 class CustomLogo extends StatelessWidget {
+  const CustomLogo({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Container(
+      child: SizedBox(
         width: 70,
         height: 70,
         child: CustomPaint(

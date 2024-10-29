@@ -3,12 +3,10 @@ import 'package:chatgpt/core/splash_screen.dart';
 import 'package:chatgpt/features/chatting/presentation/bloc/chatting_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: '.env');
-  initDependencies();
+  await initDependencies();
   runApp(MultiBlocProvider(providers: [
     BlocProvider(
       create: (_) => serviceLocator<ChattingBloc>(),

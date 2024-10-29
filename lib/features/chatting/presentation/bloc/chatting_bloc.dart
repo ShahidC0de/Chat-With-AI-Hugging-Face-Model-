@@ -16,11 +16,11 @@ class ChattingBloc extends Bloc<ChattingEvent, ChattingState> {
         prompt: event.prompt,
       ));
       response.fold(
-        (l) => emit(ChatFailure(
-          message: l.message,
+        (failure) => emit(ChatFailure(
+          message: failure.message,
         )),
-        (r) => emit(
-          ChatSuccess(response: r),
+        (response) => emit(
+          ChatSuccess(response: response),
         ),
       );
     });

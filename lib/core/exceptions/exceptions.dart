@@ -5,4 +5,6 @@ class RandomException implements Exception {
   RandomException({
     this.message = 'An unexpected Error has been occured',
   });
+  @override
+  String toString() => "RandomException: $message";
 }
