@@ -10,7 +10,7 @@ import 'package:http/http.dart' as http;
 final serviceLocator = GetIt.instance;
 
 Future<void> initDependencies() async {
-  const apiKey = "YOUR_API_KEY";
+  const apiKey = "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";
 
   await Future.delayed(const Duration(milliseconds: 100)); // Added delay
   debugPrint('API KEY IS:  $apiKey');
