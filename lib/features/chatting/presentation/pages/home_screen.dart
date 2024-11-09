@@ -1,6 +1,5 @@
 import 'package:chatgpt/core/constants/app_colors.dart';
 import 'package:chatgpt/features/chatting/presentation/bloc/chatting_bloc.dart';
-import 'package:chatgpt/features/chatting/presentation/widgets/chatgpt_logo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:typewritertext/typewritertext.dart';
@@ -188,11 +187,5 @@ class _ChatScreenState extends State<ChatScreen> {
         ],
       ),
     );
-  }
-
-  void showSnackBar(String content) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(content)));
   }
 }
