@@ -1,6 +1,4 @@
 import 'package:chatgpt/features/chatting/domain/usecases/generate_response.dart';
-import 'package:chatgpt/features/chatting/domain/usecases/get_user_sessions.dart';
-import 'package:chatgpt/features/chatting/domain/usecases/save_user_sessions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'chatting_event.dart';
@@ -10,8 +8,6 @@ class ChattingBloc extends Bloc<ChattingEvent, ChattingState> {
   final GenerateResponse _generateResponse;
   ChattingBloc({
     required GenerateResponse generateResponse,
-    required saveUserCurrentSession saveSession,
-    required GetUserSessions getUserSessions,
   })  : _generateResponse = generateResponse,
         super(ChattingInitial()) {
     on<GenerateRespnseClass>(
