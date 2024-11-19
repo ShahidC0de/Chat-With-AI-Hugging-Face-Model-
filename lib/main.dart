@@ -1,6 +1,8 @@
 import 'package:chatgpt/core/init_dependencies.dart';
 import 'package:chatgpt/core/splash_screen.dart';
 import 'package:chatgpt/features/chatting/presentation/bloc/chatting_bloc.dart';
+import 'package:chatgpt/features/chatting/presentation/bloc/savingsession_bloc.dart';
+import 'package:chatgpt/features/chatting/presentation/bloc/session_bloc_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -11,6 +13,8 @@ void main() async {
     BlocProvider(
       create: (_) => serviceLocator<ChattingBloc>(),
     ),
+    BlocProvider(create: (_) => serviceLocator<SessionBloc>()),
+    BlocProvider(create: (_) => serviceLocator<SavingsessionBloc>()),
   ], child: const MyApp()));
 }
 

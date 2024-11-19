@@ -1,5 +1,5 @@
 import 'package:chatgpt/core/errors/failure.dart';
-import 'package:chatgpt/core/usecase/usecase.dart';
+import 'package:chatgpt/core/usecase/generate_response_usecase.dart';
 import 'package:chatgpt/features/chatting/domain/repository/repository.dart';
 import 'package:fpdart/fpdart.dart';
 

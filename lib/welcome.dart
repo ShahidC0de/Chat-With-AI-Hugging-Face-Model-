@@ -118,7 +118,7 @@ class Welcome extends StatelessWidget {
                 child: ElevatedButton(
                     onPressed: () {
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (context) => const ChatScreen()));
+                          builder: (context) => ChatScreen()));
                     },
                     child: Text('Continue',
                         style: AppStyles.cBold.copyWith(

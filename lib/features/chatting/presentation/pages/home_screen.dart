@@ -1,131 +1,215 @@
 import 'package:chatgpt/core/constants/app_colors.dart';
+import 'package:chatgpt/features/chatting/domain/entities/chat_session.dart';
 import 'package:chatgpt/features/chatting/presentation/bloc/chatting_bloc.dart';
+import 'package:chatgpt/features/chatting/presentation/bloc/savingsession_bloc.dart';
+import 'package:chatgpt/features/chatting/presentation/bloc/session_bloc_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:typewritertext/typewritertext.dart';
+import 'package:uuid/uuid.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key});
+  const ChatScreen({Key? key}) : super(key: key);
 
   @override
-  State<ChatScreen> createState() => _ChatScreenState();
+  _ChatScreenState createState() => _ChatScreenState();
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  String id = '';
   String tempController = "";
   bool isLoading = false;
+  List<Map<String, dynamic>> _chatMessages = [];
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetching sessions on initialization.
+    context.read<SessionBloc>().add(GettingSessionsEvent());
+  }
 
   bool checkIfThePromptIsLatest(String response) {
-    if (response.isNotEmpty && _chatMessages.last['response'] == response) {
-      return true;
+    if (response.isNotEmpty && _chatMessages.isNotEmpty) {
+      return _chatMessages.last['response'] == response;
     }
     return false;
   }
 
-  final List<Map<String, dynamic>> _chatMessages = [
-    {
-      'prompt': 'hi i am shahid and i belong to Swat.',
-      'response': 'hi i am ChatGPT, how can i help you?',
-    },
-  ];
+  // Save session whenever a new message is added
+  void saveSession() {
+    ChatSession session = ChatSession(
+      id: id.isEmpty ? const Uuid().v4().toString() : id,
+      messages: List.from(_chatMessages),
+    );
+    context
+        .read<SavingsessionBloc>()
+        .add(SaveUserSessionEvent(session: session));
+    id = session.id;
+  }
+
   @override
   Widget build(BuildContext context) {
     TextEditingController controller = TextEditingController();
 
     return SafeArea(
       child: Scaffold(
-          backgroundColor: AppStyles.cBlack,
-          appBar: AppBar(
-            backgroundColor: AppStyles.cGrey.withOpacity(0.3),
-            title: Text(
-              "ChatGPT",
-              style: AppStyles.cSemiBold.copyWith(
-                color: AppStyles.cWhite,
-              ),
-            ),
+        backgroundColor: AppStyles.cBlack,
+        appBar: AppBar(
+          backgroundColor: AppStyles.cGrey.withOpacity(0.3),
+          title: Text(
+            "ChatGPT",
+            style: AppStyles.cSemiBold.copyWith(color: AppStyles.cWhite),
           ),
-          body: Column(
+        ),
+        drawer: Drawer(
+          backgroundColor: AppStyles.cBlack,
+          child: BlocBuilder<SessionBloc, SessionBlocState>(
+            builder: (context, state) {
+              if (state is GettingSessionsLoading) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (state is GettingSessionsFailure) {
+                return Text(state.message);
+              }
+              if (state is GettingSessionsSuccess) {
+                if (state.sessions.isEmpty) {
+                  return const SizedBox();
+                } else {
+                  return ListView(
+                    children: [
+                      DrawerHeader(
+                        child: Text(
+                          "History",
+                          style: AppStyles.cSemiBold.copyWith(
+                            color: AppStyles.cWhite,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: ListTile(
+                          tileColor: AppStyles.cGrey.withOpacity(0.3),
+                          title: Text(
+                            'New Chat',
+                            style: AppStyles.cSemiBold.copyWith(
+                              color: AppStyles.cWhite,
+                            ),
+                          ),
+                          leading: const Icon(Icons.chat),
+                        ),
+                      ),
+                      ...state.sessions.map((session) {
+                        String firstPrompt = session.messages.isNotEmpty
+                            ? session.messages.first['prompt'] ?? "No Prompt"
+                            : "No Messages";
+
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pop();
+                            setState(() {
+                              _chatMessages = List.from(session.messages);
+                              id = session.id;
+                            });
+                          },
+                          child: ListTile(
+                            leading: const Icon(Icons.chat_bubble),
+                            tileColor: AppStyles.cGrey.withOpacity(0.3),
+                            title: Text(
+                              firstPrompt,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppStyles.cSemiBold
+                                  .copyWith(color: AppStyles.cWhite),
+                            ),
+                          ),
+                        );
+                      }),
+                    ],
+                  );
+                }
+              }
+              return const SizedBox();
+            },
+          ),
+        ),
+        body: BlocListener<ChattingBloc, ChattingState>(
+          listener: (context, state) {
+            if (state is ChatLoading) {
+              setState(() {
+                isLoading = true;
+              });
+            }
+            if (state is ChatSuccess) {
+              setState(() {
+                _chatMessages.add({
+                  'prompt': tempController,
+                  'response': state.response,
+                });
+                isLoading = false;
+                // Save session after new chat response
+                saveSession();
+              });
+            }
+          },
+          child: Column(
             children: [
               Expanded(
-                  child: SingleChildScrollView(
-                child: Column(
-                    children: List.generate(_chatMessages.length, (index) {
-                  final chatMessage = _chatMessages[index];
-                  return _makeTextWidget(
-                      prompt: chatMessage['prompt'] ?? "Prompt is empty",
-                      response: chatMessage['response'] ?? "");
-                })),
-              )),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  isLoading
-                      ? CircularProgressIndicator(
-                          color: AppStyles.cWhite,
-                        )
-                      : const SizedBox(
-                          height: 10,
-                          width: 10,
-                        )
-                ],
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: List.generate(
+                      _chatMessages.length,
+                      (index) {
+                        final chatMessage = _chatMessages[index];
+                        return _makeTextWidget(
+                          prompt: chatMessage['prompt'] ?? "Prompt is empty",
+                          response: chatMessage['response'] ?? "",
+                        );
+                      },
+                    ),
+                  ),
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: [
                     Expanded(
-                        child: TextField(
-                      controller: controller,
-                      decoration: InputDecoration(
+                      child: TextField(
+                        controller: controller,
+                        decoration: InputDecoration(
                           fillColor: AppStyles.cGrey.withOpacity(0.3),
                           filled: true,
-                          hintText: "How can i help you?",
+                          hintText: "How can I help you?",
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide.none,
-                          )),
-                    )),
-                    const SizedBox(
-                      width: 10,
+                          ),
+                        ),
+                      ),
                     ),
-                    BlocListener<ChattingBloc, ChattingState>(
-                      listener: (context, state) {
-                        if (state is ChatLoading) {
-                          setState(() {
-                            isLoading = true;
-                          });
-                        }
-                        if (state is ChatSuccess) {
-                          setState(() {
-                            _chatMessages.add({
-                              'prompt': tempController,
-                              'response': state.response,
-                            });
-                            isLoading = false;
-                          });
-                        }
-                      },
-                      child: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              tempController = controller.text;
+                    const SizedBox(width: 10),
+                    isLoading
+                        ? CircularProgressIndicator(color: AppStyles.cWhite)
+                        : IconButton(
+                            onPressed: () {
                               if (controller.text.isNotEmpty) {
+                                tempController = controller.text;
                                 context.read<ChattingBloc>().add(
                                     GenerateRespnseClass(
                                         prompt: controller.text));
                               }
-                            });
-                          },
-                          icon: Icon(
-                            isLoading ? Icons.waving_hand : Icons.send,
-                            color: AppStyles.cWhite,
-                          )),
-                    ),
+                            },
+                            icon: Icon(
+                              Icons.send,
+                              color: AppStyles.cWhite,
+                            ),
+                          ),
                   ],
                 ),
-              )
+              ),
             ],
-          )),
+          ),
+        ),
+      ),
     );
   }
 
@@ -140,13 +224,8 @@ class _ChatScreenState extends State<ChatScreen> {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.person,
-                color: AppStyles.cWhite,
-              ),
-              const SizedBox(
-                width: 10,
-              ),
+              Icon(Icons.person, color: AppStyles.cWhite),
+              const SizedBox(width: 10),
               Expanded(
                 child: Text(
                   prompt,
@@ -155,9 +234,7 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ],
           ),
-          const SizedBox(
-            height: 30,
-          ),
+          const SizedBox(height: 30),
           Row(
             children: [
               Expanded(
@@ -165,25 +242,24 @@ class _ChatScreenState extends State<ChatScreen> {
                   borderRadius: BorderRadius.circular(10),
                   color: AppStyles.cGrey.withOpacity(0.3),
                   child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: checkIfThePromptIsLatest(response)
-                          ? TypeWriter.text(
-                              response,
-                              duration: const Duration(
-                                milliseconds: 100,
-                              ),
-                              style: AppStyles.cSemiBold
-                                  .copyWith(color: AppStyles.cWhite),
-                            )
-                          : Text(
-                              response,
-                              style: AppStyles.cSemiBold
-                                  .copyWith(color: AppStyles.cWhite),
-                            )),
+                    padding: const EdgeInsets.all(8.0),
+                    child: checkIfThePromptIsLatest(response)
+                        ? TypeWriter.text(
+                            response,
+                            duration: const Duration(milliseconds: 100),
+                            style: AppStyles.cSemiBold
+                                .copyWith(color: AppStyles.cWhite),
+                          )
+                        : Text(
+                            response,
+                            style: AppStyles.cSemiBold
+                                .copyWith(color: AppStyles.cWhite),
+                          ),
+                  ),
                 ),
               ),
             ],
-          )
+          ),
         ],
       ),
     );
