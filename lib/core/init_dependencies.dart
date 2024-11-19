@@ -39,8 +39,6 @@ Future<void> initDependencies() async {
 
   serviceLocator.registerLazySingleton(() => ChattingBloc(
         generateResponse: serviceLocator(),
-        saveSession: serviceLocator(),
-        getUserSessions: serviceLocator(),
       ));
   serviceLocator.registerLazySingleton(() => SessionBloc(
         getUserSessions: serviceLocator(),
