@@ -87,15 +87,24 @@ class _ChatScreenState extends State<ChatScreen> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: ListTile(
-                          tileColor: AppStyles.cGrey.withOpacity(0.3),
-                          title: Text(
-                            'New Chat',
-                            style: AppStyles.cSemiBold.copyWith(
-                              color: AppStyles.cWhite,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pop();
+                            setState(() {
+                              _chatMessages.clear();
+                              id = '';
+                            });
+                          },
+                          child: ListTile(
+                            tileColor: AppStyles.cGrey.withOpacity(0.3),
+                            title: Text(
+                              'New Chat',
+                              style: AppStyles.cSemiBold.copyWith(
+                                color: AppStyles.cWhite,
+                              ),
                             ),
+                            leading: const Icon(Icons.chat),
                           ),
-                          leading: const Icon(Icons.chat),
                         ),
                       ),
                       ...state.sessions.map((session) {
@@ -111,14 +120,17 @@ class _ChatScreenState extends State<ChatScreen> {
                               id = session.id;
                             });
                           },
-                          child: ListTile(
-                            leading: const Icon(Icons.chat_bubble),
-                            tileColor: AppStyles.cGrey.withOpacity(0.3),
-                            title: Text(
-                              firstPrompt,
-                              overflow: TextOverflow.ellipsis,
-                              style: AppStyles.cSemiBold
-                                  .copyWith(color: AppStyles.cWhite),
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: ListTile(
+                              leading: const Icon(Icons.chat_bubble),
+                              tileColor: AppStyles.cGrey.withOpacity(0.3),
+                              title: Text(
+                                firstPrompt,
+                                overflow: TextOverflow.ellipsis,
+                                style: AppStyles.cSemiBold
+                                    .copyWith(color: AppStyles.cWhite),
+                              ),
                             ),
                           ),
                         );

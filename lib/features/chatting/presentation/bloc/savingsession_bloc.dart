@@ -7,10 +7,10 @@ part 'savingsession_event.dart';
 part 'savingsession_state.dart';
 
 class SavingsessionBloc extends Bloc<SavingsessionEvent, SavingsessionState> {
-  final saveUserCurrentSession _saveSession;
+  final SaveUserCurrentSession _saveSession;
 
   SavingsessionBloc({
-    required saveUserCurrentSession saveSession,
+    required SaveUserCurrentSession saveSession,
   })  : _saveSession = saveSession,
         super(SavingsessionInitial()) {
     on<SaveUserSessionEvent>((event, emit) async {

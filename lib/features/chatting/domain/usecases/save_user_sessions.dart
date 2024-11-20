@@ -4,9 +4,9 @@ import 'package:chatgpt/features/chatting/domain/entities/chat_session.dart';
 import 'package:chatgpt/features/chatting/domain/repository/repository.dart';
 import 'package:fpdart/fpdart.dart';
 
-class saveUserCurrentSession implements SessionsUseCase<void, SessionParams> {
+class SaveUserCurrentSession implements SessionsUseCase<void, SessionParams> {
   final Repository repository;
-  saveUserCurrentSession({
+  SaveUserCurrentSession({
     required this.repository,
   });
 
