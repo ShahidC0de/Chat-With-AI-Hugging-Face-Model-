@@ -50,8 +50,8 @@ class _ChatScreenState extends State<ChatScreen> {
       context
           .read<SavingsessionBloc>()
           .add(SaveUserSessionEvent(session: session));
+      id = session.id;
     }
-
     fetchSessions();
   }
 
@@ -123,6 +123,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         return GestureDetector(
                           onTap: () {
                             Navigator.of(context).pop();
+
                             setState(() {
                               _chatMessages = List.from(session.messages);
                               id = session.id;
@@ -160,9 +161,6 @@ class _ChatScreenState extends State<ChatScreen> {
             }
             if (state is ChatSuccess) {
               setState(() {
-                if (id.isEmpty) {
-                  id = const Uuid().v4().toString();
-                }
                 _chatMessages.add({
                   'prompt': tempController,
                   'response': state.response,
@@ -216,9 +214,10 @@ class _ChatScreenState extends State<ChatScreen> {
                             onPressed: () {
                               if (controller.text.isNotEmpty) {
                                 if (_chatMessages.isEmpty && id.isEmpty) {
-                                  id = const Uuid().v4().toString();
+                                  setState(() {
+                                    id = const Uuid().v4().toString();
+                                  });
                                 }
-
                                 tempController = controller.text;
                                 context.read<ChattingBloc>().add(
                                     GenerateRespnseClass(

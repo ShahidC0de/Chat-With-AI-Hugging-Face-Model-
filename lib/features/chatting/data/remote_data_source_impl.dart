@@ -85,31 +85,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
         message: "Exhausted retries without successful response.");
   }
 
-  @override
-  Future<void> saveChatsessions({required session}) async {
-    try {
-      debugPrint("You are in RemoteDataSource of saving user sessions");
-
-      final prefs = sharedPreferences;
-      // taking an instance of shared_preference
-      final List<String> sessions = prefs.getStringList('Chat_sessions') ??
-          []; // getting the current list of messages named chat_sessions,
-      // if not existing then presume it empty,
-      sessions.add(jsonEncode({
-        // adding the current session to chat_sessions.
-        'id': session.id,
-        'messages': session.messages,
-      }));
-      prefs.setStringList('Chat_sessions',
-          sessions); // saving the chat_sessions with new session.
-      debugPrint("Session Saved And the Data session containes ${session.id}");
-      debugPrint("And the Session data is ${session.messages}");
-    } catch (e) {
-      throw RandomException(
-        message: e.toString(),
-      );
-    }
-  }
+  Future<void> saveChatSessions({required session}) async {}
 
   @override
   Future<List<ChatSession>> getChatSessions() async {
@@ -138,6 +114,45 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       } else {
         return [];
       }
+    } catch (e) {
+      throw RandomException(message: e.toString());
+    }
+  }
+
+  @override
+  Future<void> saveChatsessions({required ChatSession session}) async {
+    try {
+      debugPrint("You are in RemoteDataSource of saving user sessions");
+
+      final prefs = sharedPreferences;
+
+      final List<String> sessions = prefs.getStringList('Chat_sessions') ?? [];
+
+      bool sessionExists = false;
+
+      for (int i = 0; i < sessions.length; i++) {
+        var decodedSession = jsonDecode(sessions[i]);
+        if (decodedSession['id'] == session.id) {
+          sessions[i] = jsonEncode({
+            'id': session.id,
+            'messages': session.messages,
+          });
+          sessionExists = true;
+          break;
+        }
+      }
+
+      if (!sessionExists) {
+        sessions.add(jsonEncode({
+          'id': session.id,
+          'messages': session.messages,
+        }));
+      }
+
+      prefs.setStringList('Chat_sessions', sessions);
+
+      debugPrint("Session Saved or Updated. Session ID: ${session.id}");
+      debugPrint("Session Data: ${session.messages}");
     } catch (e) {
       throw RandomException(message: e.toString());
     }
