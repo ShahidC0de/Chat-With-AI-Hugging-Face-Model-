@@ -15,7 +15,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 final serviceLocator = GetIt.instance;
 
 Future<void> initDependencies() async {
-  const apiKey = "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";
+  const apiKey =
+      ""; // Your HuggingFace API key and please select the model in HuggingFace
+  //  and edit the request structure in the remotedata Source impl file, in data layer
 
   await Future.delayed(const Duration(milliseconds: 100)); // Added delay
   debugPrint('API KEY IS:  $apiKey');
