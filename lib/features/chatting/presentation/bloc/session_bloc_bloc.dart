@@ -14,7 +14,7 @@ class SessionBloc extends Bloc<SessionBlocEvent, SessionBlocState> {
   })  : _getUserSessions = getUserSessions,
         super(SessionBlocInitial()) {
     on<GettingSessionsEvent>((event, emit) async {
-      print('getting sessions event is processing in chatbloc');
+      debugPrint('getting sessions event is processing in chatbloc');
       emit(GettingSessionsLoading());
       final response = await _getUserSessions.call();
       response.fold((failure) {

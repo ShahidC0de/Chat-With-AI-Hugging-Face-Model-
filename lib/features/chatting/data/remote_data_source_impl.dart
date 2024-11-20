@@ -123,7 +123,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
           (session) {
             final data = jsonDecode(session);
             debugPrint(
-                "IN getting sessions remote datasource impl the data is ${data}");
+                "IN getting sessions remote datasource impl the data is $data");
             final List<Map<String, dynamic>> messages =
                 (data['messages'] as List<dynamic>).map((message) {
               return Map<String, dynamic>.from(message);

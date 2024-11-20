@@ -9,9 +9,10 @@ import 'package:typewritertext/typewritertext.dart';
 import 'package:uuid/uuid.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({Key? key}) : super(key: key);
+  const ChatScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _ChatScreenState createState() => _ChatScreenState();
 }
 
@@ -24,7 +25,11 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
+    fetchSessions();
     // Fetching sessions on initialization.
+  }
+
+  void fetchSessions() {
     context.read<SessionBloc>().add(GettingSessionsEvent());
   }
 
@@ -37,14 +42,17 @@ class _ChatScreenState extends State<ChatScreen> {
 
   // Save session whenever a new message is added
   void saveSession() {
-    ChatSession session = ChatSession(
-      id: id.isEmpty ? const Uuid().v4().toString() : id,
-      messages: List.from(_chatMessages),
-    );
-    context
-        .read<SavingsessionBloc>()
-        .add(SaveUserSessionEvent(session: session));
-    id = session.id;
+    if (id.isNotEmpty) {
+      ChatSession session = ChatSession(
+        id: id,
+        messages: List.from(_chatMessages),
+      );
+      context
+          .read<SavingsessionBloc>()
+          .add(SaveUserSessionEvent(session: session));
+    }
+
+    fetchSessions();
   }
 
   @override
@@ -152,6 +160,9 @@ class _ChatScreenState extends State<ChatScreen> {
             }
             if (state is ChatSuccess) {
               setState(() {
+                if (id.isEmpty) {
+                  id = const Uuid().v4().toString();
+                }
                 _chatMessages.add({
                   'prompt': tempController,
                   'response': state.response,
@@ -204,6 +215,10 @@ class _ChatScreenState extends State<ChatScreen> {
                         : IconButton(
                             onPressed: () {
                               if (controller.text.isNotEmpty) {
+                                if (_chatMessages.isEmpty && id.isEmpty) {
+                                  id = const Uuid().v4().toString();
+                                }
+
                                 tempController = controller.text;
                                 context.read<ChattingBloc>().add(
                                     GenerateRespnseClass(

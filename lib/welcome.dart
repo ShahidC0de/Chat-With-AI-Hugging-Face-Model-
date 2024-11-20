@@ -23,12 +23,15 @@ class Welcome extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Welcome to \nChatGPT',
-                style: AppStyles.cLargeBold,
+                'Welcome to \nChat WIth AI',
+                style: AppStyles.cSemiBold.copyWith(
+                  color: AppStyles.cWhite,
+                  fontSize: 25,
+                ),
               ),
               const SizedBox(height: 5),
               Text(
-                'This official app is free, syncs your history across devices, and brings you the latest model improvements from OpenAI.',
+                'This testing app is free, syncs your history across devices, and brings you the latest model improvements from OpenAI.',
                 style: AppStyles.cSemiBold.copyWith(
                   color: AppStyles.cWhite,
                   fontSize: 17,
@@ -37,8 +40,8 @@ class Welcome extends StatelessWidget {
               const SizedBox(height: 50),
               _buildRow(
                   Icons.search,
-                  'ChatGPT can be inaccurate',
-                  'ChatGPT may provide inaccurate \ninformation about people, places, or facts.',
+                  'ChatAI can be inaccurate',
+                  'HuggingFace Model may provide inaccurate \ninformation about people, places, or facts.',
                   null),
               const SizedBox(
                 height: 20,
