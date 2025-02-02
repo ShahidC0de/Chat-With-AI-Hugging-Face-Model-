@@ -1,16 +1,10 @@
-# chatgpt
+# Chat With AI
 
-A new Flutter project.
+Following Clean Architecture with SOLID principles, this app provides interaction with HuggingFace AI text based training model. Although the response is not accurate but it allows unlimited calls using API. 
+The app provides a Splash Screen, chatting, and storing the user sessions.
 
-## Getting Started
+## User Interface
 
-This project is a starting point for a Flutter application.
+![chat with Ai](https://github.com/user-attachments/assets/19eb1c8f-53fd-4dff-a87f-0a0b6e87b3e0)
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
